@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Доступ к серверу</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: #00FF00;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+    }
+
+    #terminal, #inputArea {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    #terminal {
+      background-color: #002200;
+      border-right: 2px solid #00FF00;
+    }
+
+    #inputArea {
+      background-color: #000000;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-left: 2px solid #00FF00;
+    }
+
+    .blinking-cursor {
+      display: inline-block;
+      width: 10px;
+      background-color: #00FF00;
+      margin-left: 5px;
+      animation: blink 0.8s infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      50.1%, 100% { opacity: 0; }
+    }
+
+    #enterPrompt {
+      display: none;
+      margin-top: 20px;
+    }
+
+    #progressBarContainer {
+      width: 80%;
+      height: 30px;
+      border: 1px solid #00FF00;
+      margin: 20px 0;
+    }
+
+    #progressBar {
+      height: 100%;
+      width: 0;
+      background-color: #00FF00;
+    }
+
+    #keyboard {
+      display: grid;
+      grid-template-columns: repeat(4, 60px);
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .key {
+      background-color: #003300;
+      color: #00FF00;
+      padding: 15px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid #00FF00;
+      font-size: 16px;
+      word-break: break-word;
+    }
+
+    #codeInput {
+      font-size: 24px;
+      padding: 10px;
+      background-color: #001100;
+      color: #00FF00;
+      border: 1px solid #00FF00;
+      width: 200px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    #messageBox {
+      font-size: 22px;
+      color: red;
+      margin-top: 10px;
+    }
+
+    /* Final Celebration Screen */
+    #celebration {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(to bottom, #240046, #3c096c);
+      color: #ffff66;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #celebration ul {
+      max-width: 600px;
+      margin-top: 30px;
+      list-style: none;
+      padding: 0;
+    }
+
+    #celebration li {
+      margin: 5px 0;
+      font-size: 20px;
+    }
+
+    .currency {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      animation: fall linear infinite;
+      color: #00ffea;
+      opacity: 0.5;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-100px); }
+      100% { transform: translateY(110vh); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="terminal">
+  <div id="output"></div>
+  <div id="enterPrompt">Нажмите Enter для повторного подключения<span class="blinking-cursor"></span></div>
+</div>
+
+<div id="inputArea">
+  <div>Чтобы остановить процесс, введите дату рождения вашего первого сына (ДДММГГГ):</div>
+  <input type="text" id="codeInput" readonly maxlength="8">
+  <div id="keyboard"></div>
+  <div id="messageBox"></div>
+  <div id="progressBarContainer">
+    <div id="progressBar"></div>
+  </div>
+</div>
+
+<script>
+  const output = document.getElementById('output');
+  const enterPrompt = document.getElementById('enterPrompt');
+  const inputArea = document.getElementById('inputArea');
+  const codeInput = document.getElementById('codeInput');
+  const progressBar = document.getElementById('progressBar');
+  const messageBox = document.getElementById('messageBox');
+
+  const messages = [
+    "Инициализация соединения...",
+    "Поиск сервера...",
+    "Проверка DNS...",
+    "Установка защищённого соединения...",
+    "Ошибка 503: Сервер недоступен.",
+    "=============================",
+  ];
+
+  let index = 0;
+
+  function typeNextLine() {
+    if (index < messages.length) {
+      const line = document.createElement('div');
+      line.textContent = messages[index++];
+      output.appendChild(line);
+      output.scrollTop = output.scrollHeight;
+      setTimeout(typeNextLine, 1000);
+    } else {
+      enterPrompt.style.display = 'block';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', typeNextLine);
+
+  document.addEventListener('keydown', (e) => {
+    if (enterPrompt.style.display === 'block' && e.key === 'Enter') {
+      startDataCollection();
+    }
+  });
+
+  function startDataCollection() {
+    output.innerHTML = '';
+    enterPrompt.style.display = 'none';
+    const phase2 = [
+      "Подключение успешно.",
+      "Считываем данные...",
+      "Забираем ваш IP...",
+      "Вычисляем местоположение...",
+      "Сбор персональных данных...",
+      "Скачивание секретных документов...",
+    ];
+
+    let i = 0;
+    function next() {
+      if (i < phase2.length) {
+        const line = document.createElement('div');
+        line.textContent = phase2[i++];
+        output.appendChild(line);
+        output.scrollTop = output.scrollHeight;
+        setTimeout(next, 1000);
+      } else {
+        launchProgressPhase();
+      }
+    }
+
+    next();
+  }
+
+  function launchProgressPhase() {
+    inputArea.style.display = 'flex';
+
+    const correctCode = '07102002';
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress++;
+      progressBar.style.width = progress + '%';
+      if (progress >= 100) {
+        clearInterval(interval);
+        if (codeInput.value !== correctCode) {
+          messageBox.textContent = "СТЫДНО НЕ ЗНАТЬ";
+          setTimeout(() => location.reload(), 3000);
+        }
+      }
+    }, 600);
+
+    const keyboard = document.getElementById('keyboard');
+    keyboard.innerHTML = '';
+    for (let i = 0; i <= 9; i++) {
+      const btn = document.createElement('div');
+      btn.className = 'key';
+      btn.textContent = i;
+      btn.onclick = () => {
+        if (codeInput.value.length < 8) {
+          codeInput.value += i;
+        }
+      };
+      keyboard.appendChild(btn);
+    }
+
+    const resetBtn = document.createElement('div');
+    resetBtn.className = 'key';
+    resetBtn.style.gridColumn = 'span 2';
+    resetBtn.textContent = 'Сброс';
+    resetBtn.onclick = () => codeInput.value = '';
+    keyboard.appendChild(resetBtn);
+
+    const enterBtn = document.createElement('div');
+    enterBtn.className = 'key';
+    enterBtn.style.gridColumn = 'span 2';
+    enterBtn.textContent = 'OK';
+    enterBtn.onclick = () => {
+      if (codeInput.value === correctCode) {
+        clearInterval(interval);
+        showCelebration();
+      } else {
+        messageBox.textContent = 'Неверная дата. Попробуйте снова.';
+      }
+    };
+    keyboard.appendChild(enterBtn);
+  }
+
+  function showCelebration() {
+    const celebration = document.createElement('div');
+    celebration.id = 'celebration';
+    celebration.innerHTML = `
+      <div style="font-size: 36px; font-weight: bold;">🎉 УРА! ПОЗДРАВЛЯЮ С ДНЁМ РОЖДЕНИЯ, ПАП! 🎉</div>
+      <ul>
+       
+        <li>Чтоб Wi-Fi был везде!</li>
+        <li>Никаких налогов — ни моральных, ни жизненних </li>
+        <li>Любви как в фильмах</li>
+	<li>Здоровья и силы как у Рональдо в его то годы</li>
+        <li>Удачи как у Леприкона</li>
+        <li>Ну и лучших детей как у тебя сейчас😁</li>
+      </ul>
+    `;
+    document.body.appendChild(celebration);
+
+    // Дощ із валют
+    const symbols = ['💵','💶','💷','💴'];
+    for (let i = 0; i < 50; i++) {
+      const el = document.createElement('div');
+      el.className = 'currency';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      el.style.fontSize = (Math.random() * 16 + 14) + 'px';
+      celebration.appendChild(el);
+    }
+  }
+</script>
+
+</body>
+</html>
