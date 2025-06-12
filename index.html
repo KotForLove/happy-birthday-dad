@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Доступ к серверу</title>
   <style>
@@ -33,8 +33,15 @@
       display: none;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       border-top: 2px solid #00FF00;
+    }
+
+    #passwordHint {
+      font-size: 16px;
+      margin-bottom: 10px;
+      text-align: center;
+      max-width: 90%;
     }
 
     .blinking-cursor {
@@ -104,7 +111,6 @@
       margin-top: 10px;
     }
 
-    /* Final screen */
     #celebration {
       position: fixed;
       top: 0; left: 0;
@@ -124,15 +130,19 @@
     }
 
     #celebration ul {
-      max-width: 600px;
-      margin-top: 30px;
+      max-width: 90vw;
       list-style: none;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 
     #celebration li {
       margin: 5px 0;
       font-size: 20px;
+      text-align: center;
     }
 
     .currency {
@@ -158,7 +168,7 @@
 </div>
 
 <div id="inputArea">
-  <div>Чтобы остановить процесс, введите дату рождения вашего первого сына (ДДММГГГ):</div>
+  <div id="passwordHint">Чтобы остановить процесс, введите дату рождения вашего первого сына (ДДММГГГ):</div>
   <input type="text" id="codeInput" readonly maxlength="8">
   <div id="keyboard"></div>
   <div id="messageBox"></div>
@@ -294,33 +304,32 @@
   }
 
   function showCelebration() {
-  const celebration = document.createElement('div');
-  celebration.id = 'celebration';
-  celebration.innerHTML = `
-    <div style="font-size: 36px; font-weight: bold;">🎉 УРА! ПОЗДРАВЛЯЮ С ДНЁМ РОЖДЕНИЯ, ПАПА! 🎉</div>
-    <ul>
-      <li>Чтоб Wi-Fi был везде!</li>
-      <li>Никаких налогов — ни моральных, ни жизненних</li>
-      <li>Любви как в фильмах</li>
-      <li>Здоровья и силы как у Рональдо в его то годы</li>
-      <li>Удачи как у Леприкона</li>
-      <li>Ну и лучших детей как у тебя сейчас 😁</li>
-    </ul>
-  `;
-  document.body.appendChild(celebration);
+    const celebration = document.createElement('div');
+    celebration.id = 'celebration';
+    celebration.innerHTML = `
+      <div style="font-size: 36px; font-weight: bold;">🎉 УРА! ПОЗДРАВЛЯЮ С ДНЁМ РОЖДЕНИЯ, ПАПА ОЛЕКСІЙ! 🎉</div>
+      <ul>
+        <li>Чтоб Wi-Fi был везде!</li>
+        <li>Никаких налогов — ни моральных, ни жизненних</li>
+        <li>Любви как в фильмах</li>
+        <li>Здоровья и силы как у Рональдо в его то годы</li>
+        <li>Удачи как у Леприкона</li>
+        <li>Ну и лучших детей как у тебя сейчас 😁</li>
+      </ul>
+    `;
+    document.body.appendChild(celebration);
 
-  const symbols = ['💵','💶','💷','💴'];
-  for (let i = 0; i < 50; i++) {
-    const el = document.createElement('div');
-    el.className = 'currency';
-    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    el.style.left = Math.random() * 100 + 'vw';
-    el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-    el.style.fontSize = (Math.random() * 16 + 14) + 'px';
-    celebration.appendChild(el);
+    const symbols = ['💵','💶','💷','💴'];
+    for (let i = 0; i < 50; i++) {
+      const el = document.createElement('div');
+      el.className = 'currency';
+      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      el.style.fontSize = (Math.random() * 16 + 14) + 'px';
+      celebration.appendChild(el);
+    }
   }
-}
-
 </script>
 
 </body>
