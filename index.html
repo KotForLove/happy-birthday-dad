@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Доступ к серверу</title>
   <style>
     body {
@@ -11,8 +12,9 @@
       font-family: 'Courier New', monospace;
       font-size: 18px;
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       height: 100vh;
+      overflow: hidden;
     }
 
     #terminal, #inputArea {
@@ -23,7 +25,7 @@
 
     #terminal {
       background-color: #002200;
-      border-right: 2px solid #00FF00;
+      border-bottom: 2px solid #00FF00;
     }
 
     #inputArea {
@@ -32,7 +34,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      border-left: 2px solid #00FF00;
+      border-top: 2px solid #00FF00;
     }
 
     .blinking-cursor {
@@ -54,7 +56,8 @@
     }
 
     #progressBarContainer {
-      width: 80%;
+      width: 90%;
+      max-width: 400px;
       height: 30px;
       border: 1px solid #00FF00;
       margin: 20px 0;
@@ -101,7 +104,7 @@
       margin-top: 10px;
     }
 
-    /* Final Celebration Screen */
+    /* Final screen */
     #celebration {
       position: fixed;
       top: 0; left: 0;
@@ -117,6 +120,7 @@
       z-index: 1000;
       text-align: center;
       overflow: hidden;
+      padding: 20px;
     }
 
     #celebration ul {
@@ -150,7 +154,7 @@
 
 <div id="terminal">
   <div id="output"></div>
-  <div id="enterPrompt">Нажмите Enter для повторного подключения<span class="blinking-cursor"></span></div>
+  <div id="enterPrompt">Нажмите на экран для продолжения<span class="blinking-cursor"></span></div>
 </div>
 
 <div id="inputArea">
@@ -196,12 +200,6 @@
 
   document.addEventListener('DOMContentLoaded', typeNextLine);
 
-  document.addEventListener('keydown', (e) => {
-    if (enterPrompt.style.display === 'block' && e.key === 'Enter') {
-      startDataCollection();
-    }
-  });
-
   function startDataCollection() {
     output.innerHTML = '';
     enterPrompt.style.display = 'none';
@@ -229,6 +227,18 @@
 
     next();
   }
+
+  document.addEventListener('click', () => {
+    if (enterPrompt.style.display === 'block') {
+      startDataCollection();
+    }
+  });
+
+  document.addEventListener('touchstart', () => {
+    if (enterPrompt.style.display === 'block') {
+      startDataCollection();
+    }
+  });
 
   function launchProgressPhase() {
     inputArea.style.display = 'flex';
@@ -284,34 +294,33 @@
   }
 
   function showCelebration() {
-    const celebration = document.createElement('div');
-    celebration.id = 'celebration';
-    celebration.innerHTML = `
-      <div style="font-size: 36px; font-weight: bold;">🎉 УРА! ПОЗДРАВЛЯЮ С ДНЁМ РОЖДЕНИЯ, ПАП! 🎉</div>
-      <ul>
-       
-        <li>Чтоб Wi-Fi был везде!</li>
-        <li>Никаких налогов — ни моральных, ни жизненних </li>
-        <li>Любви как в фильмах</li>
-	<li>Здоровья и силы как у Рональдо в его то годы</li>
-        <li>Удачи как у Леприкона</li>
-        <li>Ну и лучших детей как у тебя сейчас😁</li>
-      </ul>
-    `;
-    document.body.appendChild(celebration);
+  const celebration = document.createElement('div');
+  celebration.id = 'celebration';
+  celebration.innerHTML = `
+    <div style="font-size: 36px; font-weight: bold;">🎉 УРА! ПОЗДРАВЛЯЮ С ДНЁМ РОЖДЕНИЯ, ПАПА! 🎉</div>
+    <ul>
+      <li>Чтоб Wi-Fi был везде!</li>
+      <li>Никаких налогов — ни моральных, ни жизненних</li>
+      <li>Любви как в фильмах</li>
+      <li>Здоровья и силы как у Рональдо в его то годы</li>
+      <li>Удачи как у Леприкона</li>
+      <li>Ну и лучших детей как у тебя сейчас 😁</li>
+    </ul>
+  `;
+  document.body.appendChild(celebration);
 
-    // Дощ із валют
-    const symbols = ['💵','💶','💷','💴'];
-    for (let i = 0; i < 50; i++) {
-      const el = document.createElement('div');
-      el.className = 'currency';
-      el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-      el.style.fontSize = (Math.random() * 16 + 14) + 'px';
-      celebration.appendChild(el);
-    }
+  const symbols = ['💵','💶','💷','💴'];
+  for (let i = 0; i < 50; i++) {
+    const el = document.createElement('div');
+    el.className = 'currency';
+    el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+    el.style.fontSize = (Math.random() * 16 + 14) + 'px';
+    celebration.appendChild(el);
   }
+}
+
 </script>
 
 </body>
